@@ -25,7 +25,5 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:${{ github.sha }}
-        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:buildcache,mode=max
+          ${{ secrets.DOCKERHUB_USERNAME }}/docker-github-actions-demo:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/docker-github-actions-demo:${{ github.sha }}
