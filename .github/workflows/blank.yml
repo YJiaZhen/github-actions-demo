@@ -27,3 +27,20 @@ jobs:
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/docker-github-actions-demo:latest
           ${{ secrets.DOCKERHUB_USERNAME }}/docker-github-actions-demo:${{ github.sha }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/docker-github-actions-demo:latest
+          docker stop $(docker ps -q) || true
+          docker rm $(docker ps -aq) || true
+          docker run -d -p 3000:3000 ${{ secrets.DOCKERHUB_USERNAME }}/docker-github-actions-demo:latest
